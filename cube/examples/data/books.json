@@ -1,0 +1,87 @@
+{
+  "comment": "Four books. B1 splits Y then X and carries an uncheckable parent control (one child missing); B2 splits X then Y in the opposite order with fully verifiable controls; B3 has a control-total conflict; B4 puts an exact control on a wholly not_applicable cell. B1 contains a negative exact value.",
+  "books": [
+    {
+      "id": "B1",
+      "rect": ["A", "P"],
+      "root": {
+        "rect": ["A", "P"],
+        "split": "Y",
+        "control": 110,
+        "children": [
+          {
+            "rect": ["A", "P1"],
+            "split": "X",
+            "control": 70,
+            "children": [
+              {"rect": ["A1", "P1"], "state": "exact", "value": 100},
+              {"rect": ["A2", "P1"], "state": "exact", "value": -30}
+            ]
+          },
+          {
+            "rect": ["A", "P2"],
+            "split": "X",
+            "children": [
+              {"rect": ["A1", "P2"], "state": "exact", "value": 40},
+              {"rect": ["A2", "P2"], "state": "missing"}
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "B2",
+      "rect": ["B", "Q"],
+      "root": {
+        "rect": ["B", "Q"],
+        "split": "X",
+        "control": 40,
+        "children": [
+          {
+            "rect": ["B1", "Q"],
+            "split": "Y",
+            "children": [
+              {"rect": ["B1", "Q1"], "state": "exact", "value": 25},
+              {"rect": ["B1", "Q2"], "state": "not_applicable"}
+            ]
+          },
+          {
+            "rect": ["B2", "Q"],
+            "split": "Y",
+            "control": 15,
+            "children": [
+              {"rect": ["B2", "Q1"], "state": "exact", "value": 5},
+              {"rect": ["B2", "Q2"], "state": "exact", "value": 10}
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "B3",
+      "rect": ["A", "Q"],
+      "root": {
+        "rect": ["A", "Q"],
+        "split": "X",
+        "control": 20,
+        "children": [
+          {"rect": ["A1", "Q"], "state": "exact", "value": 7},
+          {"rect": ["A2", "Q"], "state": "exact", "value": 8}
+        ]
+      }
+    },
+    {
+      "id": "B4",
+      "rect": ["B", "P"],
+      "root": {
+        "rect": ["B", "P"],
+        "split": "Y",
+        "control": 9,
+        "children": [
+          {"rect": ["B", "P1"], "state": "not_applicable"},
+          {"rect": ["B", "P2"], "state": "not_applicable"}
+        ]
+      }
+    }
+  ]
+}

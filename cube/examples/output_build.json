@@ -1,0 +1,33 @@
+{
+  "published_books": [
+    "B1",
+    "B2"
+  ],
+  "withheld_books": {
+    "B3": [
+      "A|Q: control 20 != sum of applicable children 15; book withheld"
+    ],
+    "B4": [
+      "B|P: exact control 9 although the cell and every descendant are not_applicable"
+    ]
+  },
+  "control_checks": {
+    "B1": [
+      "A|P1: control 70 verified against all applicable children",
+      "A|P: control 110 not checkable yet (applicable descendant missing); trusted for whole-cell reads only"
+    ],
+    "B2": [
+      "B2|Q: control 15 verified against all applicable children",
+      "B|Q: control 40 verified against all applicable children"
+    ],
+    "B3": [],
+    "B4": []
+  },
+  "stats": {
+    "books_seen": 4,
+    "cells_visited": 20,
+    "rectangle_partitions": 0,
+    "leaf_pairs_materialized": 0,
+    "max_carve_parts": 0
+  }
+}

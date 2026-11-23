@@ -1,0 +1,35 @@
+{
+  "comment": "Two finite acyclic dimension trees; leaves are mutually exclusive. Extra branches Z / R are deliberately unhanded by any book.",
+  "dimensions": {
+    "X": {
+      "root": "X",
+      "nodes": {
+        "X": ["A", "B", "Z"],
+        "A": ["A1", "A2"],
+        "A1": [],
+        "A2": [],
+        "B": ["B1", "B2"],
+        "B1": [],
+        "B2": [],
+        "Z": ["Z1", "Z2"],
+        "Z1": [],
+        "Z2": []
+      }
+    },
+    "Y": {
+      "root": "Y",
+      "nodes": {
+        "Y": ["P", "Q", "R"],
+        "P": ["P1", "P2"],
+        "P1": [],
+        "P2": [],
+        "Q": ["Q1", "Q2"],
+        "Q1": [],
+        "Q2": [],
+        "R": ["R1", "R2"],
+        "R1": [],
+        "R2": []
+      }
+    }
+  }
+}

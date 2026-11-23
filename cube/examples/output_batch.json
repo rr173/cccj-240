@@ -1,0 +1,527 @@
+{
+  "build_report": {
+    "published_books": [
+      "B1",
+      "B2"
+    ],
+    "withheld_books": {
+      "B3": [
+        "A|Q: control 20 != sum of applicable children 15; book withheld"
+      ],
+      "B4": [
+        "B|P: exact control 9 although the cell and every descendant are not_applicable"
+      ]
+    },
+    "control_checks": {
+      "B1": [
+        "A|P1: control 70 verified against all applicable children",
+        "A|P: control 110 not checkable yet (applicable descendant missing); trusted for whole-cell reads only"
+      ],
+      "B2": [
+        "B2|Q: control 15 verified against all applicable children",
+        "B|Q: control 40 verified against all applicable children"
+      ],
+      "B3": [],
+      "B4": []
+    },
+    "stats": {
+      "books_seen": 4,
+      "cells_visited": 34,
+      "rectangle_partitions": 8,
+      "leaf_pairs_materialized": 0,
+      "max_carve_parts": 5
+    }
+  },
+  "results": [
+    {
+      "target": [
+        "A",
+        "P"
+      ],
+      "status": "fully_exact",
+      "sum_known": 110,
+      "exact_fragments": [
+        {
+          "rect": [
+            "A",
+            "P"
+          ],
+          "kinds": [
+            "exact"
+          ],
+          "value": 110,
+          "source": "B1",
+          "source_cell": [
+            "A",
+            "P"
+          ],
+          "reason": "control_total"
+        }
+      ],
+      "not_applicable_fragments": [],
+      "unknown_fragments": [],
+      "per_book": [
+        {
+          "book": "B1",
+          "status": "fully_exact",
+          "sum_known": 110,
+          "exact": [
+            {
+              "rect": [
+                "A",
+                "P"
+              ],
+              "kinds": [
+                "exact"
+              ],
+              "value": 110,
+              "source": "B1",
+              "source_cell": [
+                "A",
+                "P"
+              ],
+              "reason": "control_total"
+            }
+          ],
+          "not_applicable": [],
+          "unknown": []
+        }
+      ],
+      "engine_stats": {
+        "books_seen": 4,
+        "cells_visited": 21,
+        "rectangle_partitions": 1,
+        "leaf_pairs_materialized": 0,
+        "max_carve_parts": 0
+      }
+    },
+    {
+      "target": [
+        "B",
+        "Q"
+      ],
+      "status": "fully_exact",
+      "sum_known": 40,
+      "exact_fragments": [
+        {
+          "rect": [
+            "B",
+            "Q"
+          ],
+          "kinds": [
+            "exact"
+          ],
+          "value": 40,
+          "source": "B2",
+          "source_cell": [
+            "B",
+            "Q"
+          ],
+          "reason": "control_total"
+        }
+      ],
+      "not_applicable_fragments": [],
+      "unknown_fragments": [],
+      "per_book": [
+        {
+          "book": "B2",
+          "status": "fully_exact",
+          "sum_known": 40,
+          "exact": [
+            {
+              "rect": [
+                "B",
+                "Q"
+              ],
+              "kinds": [
+                "exact"
+              ],
+              "value": 40,
+              "source": "B2",
+              "source_cell": [
+                "B",
+                "Q"
+              ],
+              "reason": "control_total"
+            }
+          ],
+          "not_applicable": [],
+          "unknown": []
+        }
+      ],
+      "engine_stats": {
+        "books_seen": 4,
+        "cells_visited": 22,
+        "rectangle_partitions": 2,
+        "leaf_pairs_materialized": 0,
+        "max_carve_parts": 0
+      }
+    },
+    {
+      "target": [
+        "A",
+        "P2"
+      ],
+      "status": "partial",
+      "sum_known": 40,
+      "exact_fragments": [
+        {
+          "rect": [
+            "A1",
+            "P2"
+          ],
+          "kinds": [
+            "exact"
+          ],
+          "value": 40,
+          "source": "B1",
+          "source_cell": [
+            "A1",
+            "P2"
+          ],
+          "reason": "exact_terminal"
+        }
+      ],
+      "not_applicable_fragments": [],
+      "unknown_fragments": [
+        {
+          "rect": [
+            "A2",
+            "P2"
+          ],
+          "kinds": [
+            "unknown"
+          ],
+          "value": null,
+          "source": "B1",
+          "source_cell": [
+            "A2",
+            "P2"
+          ],
+          "reason": "missing_terminal"
+        }
+      ],
+      "per_book": [
+        {
+          "book": "B1",
+          "status": "partial",
+          "sum_known": 40,
+          "exact": [
+            {
+              "rect": [
+                "A1",
+                "P2"
+              ],
+              "kinds": [
+                "exact"
+              ],
+              "value": 40,
+              "source": "B1",
+              "source_cell": [
+                "A1",
+                "P2"
+              ],
+              "reason": "exact_terminal"
+            }
+          ],
+          "not_applicable": [],
+          "unknown": [
+            {
+              "rect": [
+                "A2",
+                "P2"
+              ],
+              "kinds": [
+                "unknown"
+              ],
+              "value": null,
+              "source": "B1",
+              "source_cell": [
+                "A2",
+                "P2"
+              ],
+              "reason": "missing_terminal"
+            }
+          ]
+        }
+      ],
+      "engine_stats": {
+        "books_seen": 4,
+        "cells_visited": 27,
+        "rectangle_partitions": 3,
+        "leaf_pairs_materialized": 0,
+        "max_carve_parts": 0
+      }
+    },
+    {
+      "target": [
+        "Z",
+        "R1"
+      ],
+      "status": "all_unknown",
+      "sum_known": 0,
+      "exact_fragments": [],
+      "not_applicable_fragments": [],
+      "unknown_fragments": [
+        {
+          "rect": [
+            "Z",
+            "R1"
+          ],
+          "kinds": [
+            "unknown"
+          ],
+          "value": null,
+          "source": "unhanded",
+          "source_cell": null,
+          "reason": "no_book_declares_this_region"
+        }
+      ],
+      "per_book": [],
+      "engine_stats": {
+        "books_seen": 4,
+        "cells_visited": 27,
+        "rectangle_partitions": 3,
+        "leaf_pairs_materialized": 0,
+        "max_carve_parts": 0
+      }
+    },
+    {
+      "target": [
+        "X",
+        "Y"
+      ],
+      "status": "partial",
+      "sum_known": 150,
+      "exact_fragments": [
+        {
+          "rect": [
+            "A",
+            "P"
+          ],
+          "kinds": [
+            "exact"
+          ],
+          "value": 110,
+          "source": "B1",
+          "source_cell": [
+            "A",
+            "P"
+          ],
+          "reason": "control_total"
+        },
+        {
+          "rect": [
+            "B",
+            "Q"
+          ],
+          "kinds": [
+            "exact"
+          ],
+          "value": 40,
+          "source": "B2",
+          "source_cell": [
+            "B",
+            "Q"
+          ],
+          "reason": "control_total"
+        }
+      ],
+      "not_applicable_fragments": [],
+      "unknown_fragments": [
+        {
+          "rect": [
+            "A",
+            "Q"
+          ],
+          "kinds": [
+            "unknown"
+          ],
+          "value": null,
+          "source": "unpublished:B3",
+          "source_cell": [
+            "A",
+            "Q"
+          ],
+          "reason": "book_withheld"
+        },
+        {
+          "rect": [
+            "B",
+            "P"
+          ],
+          "kinds": [
+            "unknown"
+          ],
+          "value": null,
+          "source": "unpublished:B4",
+          "source_cell": [
+            "B",
+            "P"
+          ],
+          "reason": "book_withheld"
+        },
+        {
+          "rect": [
+            "B",
+            "R"
+          ],
+          "kinds": [
+            "unknown"
+          ],
+          "value": null,
+          "source": "unhanded",
+          "source_cell": null,
+          "reason": "no_book_declares_this_region"
+        },
+        {
+          "rect": [
+            "Z",
+            "Y"
+          ],
+          "kinds": [
+            "unknown"
+          ],
+          "value": null,
+          "source": "unhanded",
+          "source_cell": null,
+          "reason": "no_book_declares_this_region"
+        },
+        {
+          "rect": [
+            "A",
+            "R"
+          ],
+          "kinds": [
+            "unknown"
+          ],
+          "value": null,
+          "source": "unhanded",
+          "source_cell": null,
+          "reason": "no_book_declares_this_region"
+        }
+      ],
+      "per_book": [
+        {
+          "book": "B1",
+          "status": "fully_exact",
+          "sum_known": 110,
+          "exact": [
+            {
+              "rect": [
+                "A",
+                "P"
+              ],
+              "kinds": [
+                "exact"
+              ],
+              "value": 110,
+              "source": "B1",
+              "source_cell": [
+                "A",
+                "P"
+              ],
+              "reason": "control_total"
+            }
+          ],
+          "not_applicable": [],
+          "unknown": []
+        },
+        {
+          "book": "B2",
+          "status": "fully_exact",
+          "sum_known": 40,
+          "exact": [
+            {
+              "rect": [
+                "B",
+                "Q"
+              ],
+              "kinds": [
+                "exact"
+              ],
+              "value": 40,
+              "source": "B2",
+              "source_cell": [
+                "B",
+                "Q"
+              ],
+              "reason": "control_total"
+            }
+          ],
+          "not_applicable": [],
+          "unknown": []
+        }
+      ],
+      "engine_stats": {
+        "books_seen": 4,
+        "cells_visited": 29,
+        "rectangle_partitions": 7,
+        "leaf_pairs_materialized": 0,
+        "max_carve_parts": 5
+      }
+    },
+    {
+      "target": [
+        "B1",
+        "Q2"
+      ],
+      "status": "not_applicable",
+      "sum_known": 0,
+      "exact_fragments": [],
+      "not_applicable_fragments": [
+        {
+          "rect": [
+            "B1",
+            "Q2"
+          ],
+          "kinds": [
+            "not_applicable"
+          ],
+          "value": null,
+          "source": "B2",
+          "source_cell": [
+            "B1",
+            "Q2"
+          ],
+          "reason": "not_applicable_terminal"
+        }
+      ],
+      "unknown_fragments": [],
+      "per_book": [
+        {
+          "book": "B2",
+          "status": "not_applicable",
+          "sum_known": 0,
+          "exact": [],
+          "not_applicable": [
+            {
+              "rect": [
+                "B1",
+                "Q2"
+              ],
+              "kinds": [
+                "not_applicable"
+              ],
+              "value": null,
+              "source": "B2",
+              "source_cell": [
+                "B1",
+                "Q2"
+              ],
+              "reason": "not_applicable_terminal"
+            }
+          ],
+          "unknown": []
+        }
+      ],
+      "engine_stats": {
+        "books_seen": 4,
+        "cells_visited": 34,
+        "rectangle_partitions": 8,
+        "leaf_pairs_materialized": 0,
+        "max_carve_parts": 5
+      }
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "comment": "B1 alone, split order Y-then-X (same book as in books.json).",
+  "books": [
+    {
+      "id": "B1",
+      "rect": ["A", "P"],
+      "root": {
+        "rect": ["A", "P"],
+        "split": "Y",
+        "control": 110,
+        "children": [
+          {
+            "rect": ["A", "P1"],
+            "split": "X",
+            "control": 70,
+            "children": [
+              {"rect": ["A1", "P1"], "state": "exact", "value": 100},
+              {"rect": ["A2", "P1"], "state": "exact", "value": -30}
+            ]
+          },
+          {
+            "rect": ["A", "P2"],
+            "split": "X",
+            "children": [
+              {"rect": ["A1", "P2"], "state": "exact", "value": 40},
+              {"rect": ["A2", "P2"], "state": "missing"}
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

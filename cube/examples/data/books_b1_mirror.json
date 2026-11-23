@@ -1,0 +1,32 @@
+{
+  "comment": "Same single book, responsibility rectangle and terminal facts as books_b1_only.json, but every split is taken in the opposite order (X-then-Y instead of Y-then-X). The root control 110 is retained on the root rectangle; the lower checked control (70 on A|P1 in the original) is omitted here, because an X-first tree has no cell at A|P1. Query semantics must be identical regardless of split order or of which ancestor carries a trusted control.",
+  "books": [
+    {
+      "id": "B1MIRROR",
+      "rect": ["A", "P"],
+      "root": {
+        "rect": ["A", "P"],
+        "split": "X",
+        "control": 110,
+        "children": [
+          {
+            "rect": ["A1", "P"],
+            "split": "Y",
+            "children": [
+              {"rect": ["A1", "P1"], "state": "exact", "value": 100},
+              {"rect": ["A1", "P2"], "state": "exact", "value": 40}
+            ]
+          },
+          {
+            "rect": ["A2", "P"],
+            "split": "Y",
+            "children": [
+              {"rect": ["A2", "P1"], "state": "exact", "value": -30},
+              {"rect": ["A2", "P2"], "state": "missing"}
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

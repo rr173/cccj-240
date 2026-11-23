@@ -1,0 +1,7 @@
+# One "X_NODE Y_NODE" pair per line. '#' starts a comment.
+A P
+B Q
+A P2
+Z R1
+X Y
+B1 Q2
