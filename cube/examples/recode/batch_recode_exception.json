@@ -1,0 +1,64 @@
+{
+  "format": "recode_batch/v1",
+  "ingested": [
+    {
+      "amount": 40,
+      "book": "E",
+      "kind": "exact_terminal",
+      "new_pair": {
+        "X": "NX1",
+        "Y": "MY"
+      },
+      "rect": [
+        "a1",
+        "P"
+      ]
+    }
+  ],
+  "parked": [
+    {
+      "amount": 60,
+      "book": "E",
+      "control": 100,
+      "deducted": 40,
+      "deducted_controls": [],
+      "deducted_exact": 40,
+      "kind": "control_difference",
+      "new_pair": null,
+      "outside_missing": true,
+      "reason": "control_residual",
+      "rect": [
+        "A",
+        "Y"
+      ]
+    },
+    {
+      "book": "E",
+      "kind": "missing",
+      "new_pair": null,
+      "reason": "missing_not_absorbed",
+      "rect": [
+        "a2",
+        "P"
+      ]
+    }
+  ],
+  "published_books": [
+    "E"
+  ],
+  "stats": {
+    "books_published": 1,
+    "books_seen": 1,
+    "books_withheld": 0,
+    "cells_walked": 7,
+    "leaf_pairs_materialized": 0,
+    "records_ingested": 1,
+    "records_parked": 2
+  },
+  "totals": {
+    "all_sources": 100,
+    "ingested": 40,
+    "parked": 60
+  },
+  "withheld_books": []
+}

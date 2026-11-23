@@ -1,0 +1,13 @@
+{
+  "comment": "One exception: a1 and a2 now have different X codes, so A|Y spans two new pairs. The lower 40 is confirmed and booked; A|Y keeps a signed difference of 100 - 40 = 60.",
+  "X": [
+    {"old": "a1", "new": "NX1"},
+    {"old": "a2", "new": "NX2"},
+    {"old": "B", "new": "NB"}
+  ],
+  "Y": [
+    {"old": "p1", "new": "MY"},
+    {"old": "p2", "new": "MY"},
+    {"old": "Q", "new": "MQ"}
+  ]
+}

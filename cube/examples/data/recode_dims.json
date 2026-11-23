@@ -1,0 +1,23 @@
+{
+  "comment": "Tiny two-level trees for the recode exception demo.",
+  "dimensions": {
+    "X": {
+      "root": "X",
+      "nodes": {
+        "X": ["A", "B"],
+        "A": ["a1", "a2"],
+        "a1": [], "a2": [],
+        "B": []
+      }
+    },
+    "Y": {
+      "root": "Y",
+      "nodes": {
+        "Y": ["P", "Q"],
+        "P": ["p1", "p2"],
+        "p1": [], "p2": [],
+        "Q": []
+      }
+    }
+  }
+}

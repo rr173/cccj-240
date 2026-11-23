@@ -1,0 +1,13 @@
+{
+  "comment": "a1/a2 share one X code and p1/p2 share one Y code, so A|Y lands on a single new pair: control 100 is booked whole and the missing a2|P is absorbed.",
+  "X": [
+    {"old": "a1", "new": "NX"},
+    {"old": "a2", "new": "NX"},
+    {"old": "B", "new": "NB"}
+  ],
+  "Y": [
+    {"old": "p1", "new": "MY"},
+    {"old": "p2", "new": "MY"},
+    {"old": "Q", "new": "MQ"}
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "comment": "Coarse-to-fine rules: a rule on an old subtree applies to the whole subtree; a deeper rule overrides it. Descendants not covered by a deeper rule inherit the ancestor. New codes may be shared by several old leaves.",
+  "X": [
+    {"old": "X", "new": "N-WEST"},
+    {"old": "A", "new": "N-ALPHA"}
+  ],
+  "Y": [
+    {"old": "Y", "new": "M-ALL"},
+    {"old": "P", "new": "M-PRIMARY"},
+    {"old": "P1", "new": "M-PRIMARY-P1"}
+  ]
+}

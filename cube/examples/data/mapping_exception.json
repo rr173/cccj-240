@@ -1,0 +1,13 @@
+{
+  "comment": "Same mapping with one exception rule: A1 now recodes to N-BETA, so B1's control A|P spans two X codes and must be split into confirmed lower-level postings plus a control difference.",
+  "X": [
+    {"old": "X", "new": "N-WEST"},
+    {"old": "A", "new": "N-ALPHA"},
+    {"old": "A1", "new": "N-BETA"}
+  ],
+  "Y": [
+    {"old": "Y", "new": "M-ALL"},
+    {"old": "P", "new": "M-PRIMARY"},
+    {"old": "P1", "new": "M-PRIMARY-P1"}
+  ]
+}

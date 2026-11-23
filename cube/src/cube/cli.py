@@ -24,13 +24,17 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import sys
+import tempfile
 from typing import List
 
 try:  # package execution: python -m cube.cli
     from .engine import BookResult, Cube, Fragment, build_cube, query_cube
     from .loader import load_handover
+    from .mapping import load_mapping
     from .model import ModelError
+    from .recode import convert_handover, reconcile
 except ImportError:  # direct script execution: python /path/to/cli.py
     import os
     import sys
@@ -38,7 +42,9 @@ except ImportError:  # direct script execution: python /path/to/cli.py
     sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
     from cube.engine import BookResult, Cube, Fragment, build_cube, query_cube
     from cube.loader import load_handover
+    from cube.mapping import load_mapping
     from cube.model import ModelError
+    from cube.recode import convert_handover, reconcile
 
 
 def _load_inputs(dims_path: str, books_path: str):
@@ -47,6 +53,34 @@ def _load_inputs(dims_path: str, books_path: str):
     with open(books_path, "r", encoding="utf-8") as fh:
         books_raw = json.load(fh)
     return load_handover(dims_raw, books_raw)
+
+
+def _load_mapping_file(path: str, handover):
+    with open(path, "r", encoding="utf-8") as fh:
+        mapping_raw = json.load(fh)
+    return load_mapping(mapping_raw, handover.tree_x, handover.tree_y)
+
+
+def _atomic_write(path: str, text: str) -> None:
+    """Write a new batch without touching an existing one on failure.
+
+    The temp file lives beside the target so the final replace is atomic on
+    the same filesystem; an interrupted run never leaves a partial batch.
+    """
+    directory = os.path.dirname(os.path.abspath(path)) or "."
+    fd, tmp = tempfile.mkstemp(prefix=".recode-", suffix=".tmp", dir=directory)
+    try:
+        with os.fdopen(fd, "w", encoding="utf-8") as fh:
+            fh.write(text)
+            fh.flush()
+            os.fsync(fh.fileno())
+        os.replace(tmp, path)
+    except BaseException:
+        try:
+            os.unlink(tmp)
+        except FileNotFoundError:
+            pass
+        raise
 
 
 def _frag_to_dict(f: Fragment) -> dict:
@@ -145,6 +179,18 @@ def main(argv: List[str] | None = None) -> int:
                          help="text file, one 'X_NODE Y_NODE' pair per line")
     p_batch.add_argument("--out", help="write JSON results here (default stdout)")
 
+    p_recode = sub.add_parser(
+        "recode",
+        help="convert old handover to an importable new-code batch",
+    )
+    add_common(p_recode)
+    p_recode.add_argument("--mapping", required=True,
+                          help="old-node -> new-code rules JSON")
+    p_recode.add_argument("--out", required=True,
+                          help="write the recode batch JSON here")
+    p_recode.add_argument("--audit", action="store_true",
+                          help="also print a short audit report to stdout")
+
     args = parser.parse_args(argv)
     try:
         handover = _load_inputs(args.dims, args.books)
@@ -152,6 +198,37 @@ def main(argv: List[str] | None = None) -> int:
     except (ModelError, FileNotFoundError, json.JSONDecodeError) as exc:
         print(f"error: {exc}", file=sys.stderr)
         return 2
+
+    if args.cmd == "recode":
+        try:
+            maps = _load_mapping_file(args.mapping, handover)
+        except (ModelError, FileNotFoundError, json.JSONDecodeError) as exc:
+            print(f"error: {exc}", file=sys.stderr)
+            return 2
+        batch = convert_handover(handover, cube, maps)
+        text = json.dumps(batch, ensure_ascii=False, indent=2, sort_keys=True)
+        try:
+            _atomic_write(args.out, text + "\n")
+        except OSError as exc:
+            print(f"error: cannot write {args.out}: {exc}", file=sys.stderr)
+            return 2
+        check = reconcile(cube, batch)
+        if args.audit:
+            print(json.dumps({
+                "published_books": batch["published_books"],
+                "withheld_books": [b["book"] for b in batch["withheld_books"]],
+                "totals": batch["totals"],
+                "reconcile": check,
+                "stats": batch["stats"],
+            }, ensure_ascii=False, indent=2))
+        if not check["ok"]:
+            print(
+                "error: recode batch does not reconcile with old sources: "
+                + ", ".join(check["unbalanced_books"]),
+                file=sys.stderr,
+            )
+            return 3
+        return 0
 
     if args.cmd == "build":
         print(json.dumps(build_report(cube), ensure_ascii=False, indent=2))

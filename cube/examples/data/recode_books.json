@@ -1,0 +1,32 @@
+{
+  "comment": "E: control 100 on A|Y, trusted because a2|P is missing. Base mapping puts a1 and a2 on one X code, so the control is booked whole. The exception mapping separates a1/a2, splitting it into 40 confirmed + 60 difference.",
+  "books": [
+    {
+      "id": "E",
+      "rect": ["X", "Y"],
+      "root": {
+        "rect": ["X", "Y"],
+        "split": "X",
+        "children": [
+          {
+            "rect": ["A", "Y"],
+            "split": "Y",
+            "control": 100,
+            "children": [
+              {
+                "rect": ["A", "P"],
+                "split": "X",
+                "children": [
+                  {"rect": ["a1", "P"], "state": "exact", "value": 40},
+                  {"rect": ["a2", "P"], "state": "missing"}
+                ]
+              },
+              {"rect": ["A", "Q"], "state": "not_applicable"}
+            ]
+          },
+          {"rect": ["B", "Y"], "state": "not_applicable"}
+        ]
+      }
+    }
+  ]
+}

@@ -31,10 +31,12 @@
 ## 目录
 
 ```
-src/cube/        引擎（model 几何 / loader 校验 / engine 构建与查询 / cli 命令行）
-examples/data/   维度树、账套、顺序镜像夹具、批量目标
+src/cube/        引擎（model 几何 / loader 校验 / engine 构建与查询
+                 / mapping 新旧编码规则 / recode 离线转仓 / cli 命令行）
+examples/data/   维度树、账套、顺序镜像夹具、批量目标、新旧编码映射
+examples/recode/ 转仓小样例批次与复跑说明
 examples/output_ 已生成的可查结果
-tests/           26 个 unittest，无第三方依赖
+tests/           51 个 unittest，无第三方依赖
 ```
 
 ## 命令行
@@ -56,9 +58,82 @@ python3 -I src/cube/cli.py query \
 python3 -I src/cube/cli.py batch \
   --dims examples/data/dims.json --books examples/data/books.json \
   --targets examples/data/targets.txt --out examples/output_batch.json
+
+# 4. 离线转仓：旧交接 -> 可直接导入新仓的 JSON 批次
+python3 -I src/cube/cli.py recode \
+  --dims examples/data/dims.json --books examples/data/books.json \
+  --mapping examples/data/mapping_sample.json \
+  --out examples/recode/batch_sample.json --audit
 ```
 
-## 已验证场景（tests/test_cube.py，26 项全过）
+## 离线转仓（recode）
+
+财务数仓更换了入仓维度编码，旧月份的交接文件无法重发。`recode` 只读取现有
+的维度、账套和一份新旧编码映射，产出一份可导入的新仓批次；**不修改原交接
+文件，也不提供按新口径查格的接口**。小样例与复跑步骤见
+`examples/recode/REPRODUCE.md`。
+
+映射文件每轴一组 `{"old": 旧节点, "new": 新码}`：
+
+- 一条规则管整个子树，越靠近叶子的规则覆盖祖先规则；不同旧叶可归到同一新码。
+- 两轴所有旧叶都必须能落到规则；未知节点、同轴重复规则、空新码、未映射叶
+  任一条都使转换失败——不生成新批次，也不覆盖已有批次（先写临时文件再原子
+  替换）。
+- 校验只走两轴各自的树节点，不枚举旧叶对或可能的新码对；每轴数万叶子的
+  场景也只需节点级工作量。
+
+批次内容（`recode_batch/v1`）：
+
+- `published_books` / `withheld_books`：沿用现有 `build_cube` 的发布判断。
+  被扣留账套只给账套 ID 与原因，**不生成金额或缺失记录**；没有账套负责的
+  区域同样不生成任何记录。
+- `ingested`：可定归属的金额。每条带 `book`（原账套）、`rect`（原格坐标）、
+  `kind`、`amount`、`new_pair`（完整新码对）。
+- `parked`：暂挂清单，供财务对回旧账。`new_pair` 恒为 `null`，绝不猜目标。
+
+判定口径：
+
+- **适用**范围以格内适用的叶对为准：不适用部分不参与判定，缺报部分仍算
+  适用，但不生成零值。一个精确终结格只落到一个新码对就整笔入仓，否则整笔
+  暂挂；不比例拆分，也不放到第一个碰到的新码对。零金额同口径。
+- **控制额**只落到一个新码对时直接整笔入仓，该格下的金额与缺报记录都不再
+  生成。跨新码对时继续处理下层，可单独定归属的金额照常入仓；控制额另行
+  对账：
+  `差额 = 控制原额 - 下层第一层遇到的控制额 - 未被这些控制额覆盖的精确终结额`。
+  下层金额无论入仓还是暂挂都只扣一次；扣减遇到控制额即停，不把控制额和
+  它的明细一并扣两次。差额非零、或扣除范围外仍有缺报时，在控制格留一条
+  `control_difference`（带符号；即使差额为零，只要范围外有缺报也保留）。
+  差额只对回该控制格，不能据此补出某个缺报格的值。无控制额的中间格只组织
+  下层记录，本身不生成金额。
+- **来源**：终结额记为 `exact_terminal`，控制额记为 `control_total`，
+  控制差额记为 `control_difference`（附 `control` 原额与 `deducted` 扣减
+  合计，以及 `deducted_controls` / `deducted_exact` / `outside_missing`），
+  未被吸收的缺报记为 `missing`。逐源保留，不会把恰好落在同一新码对的来源
+  合并。
+- **确定性**：记录按旧树几何顺序排序，打乱映射规则、账套顺序或兄弟格书写
+  顺序后批次内容不变。
+
+`--audit` 附带 `reconcile`：对每个已发布账套核对
+`Σ入仓 + Σ暂挂金额（含控制差额）== 旧账来源合计`，不平则以退出码 3 结束。
+
+## 已验证场景
+
+`tests/test_cube.py` 27 项覆盖原有构建/查询口径；`tests/test_recode.py` 24 项
+覆盖离线转仓：
+
+- **映射校验**：未知节点、同轴重复规则、空新码、未映射叶均拒收且不写批次；
+  祖先/后代规则覆盖与多旧叶共享新码。
+- **例外映射拆分控制额**（`mapping_recode_base` vs `mapping_recode_exception`，
+  只差 `a1/a2` 的新码）：原先整笔入仓的控制额 100 变成「可确认的下层入仓 40
+  + 控制差额 60」，旧账金额不丢不重（`reconcile` delta = 0）；也覆盖大样例
+  `mapping_sample` vs `mapping_exception` 中控制额跨码对、差额为 0 仍因范围外
+  缺报而保留的场景。
+- **嵌套控制额 + 粗粒度终结额**：上层扣下层控制额一次、不再扣其明细；已暂挂
+  的下层金额仍被扣减；粗粒度终结额整笔暂挂、不比例拆分。
+- **大输入**：两轴各 2 万叶子、少量源格，构建/转换与映射校验只走节点；大输入
+  在测试中生成，不入库。
+
+`tests/test_cube.py` 的原有场景：
 
 1. **拆分顺序相反、结果相同**：`books_b1_only.json`（先 Y 后 X）与 `books_b1_mirror.json`（先 X 后 Y）终结事实完全一致，对 8 个不同切窗的规范化结果逐项相同。
 2. **父额精确、一个子额 missing**：B1 根格控制额 110，而 `A2|P2` 未交。

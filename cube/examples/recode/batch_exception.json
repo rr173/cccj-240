@@ -1,0 +1,121 @@
+{
+  "format": "recode_batch/v1",
+  "ingested": [
+    {
+      "amount": 100,
+      "book": "B1",
+      "kind": "exact_terminal",
+      "new_pair": {
+        "X": "N-BETA",
+        "Y": "M-PRIMARY-P1"
+      },
+      "rect": [
+        "A1",
+        "P1"
+      ]
+    },
+    {
+      "amount": 40,
+      "book": "B1",
+      "kind": "exact_terminal",
+      "new_pair": {
+        "X": "N-BETA",
+        "Y": "M-PRIMARY"
+      },
+      "rect": [
+        "A1",
+        "P2"
+      ]
+    },
+    {
+      "amount": -30,
+      "book": "B1",
+      "kind": "exact_terminal",
+      "new_pair": {
+        "X": "N-ALPHA",
+        "Y": "M-PRIMARY-P1"
+      },
+      "rect": [
+        "A2",
+        "P1"
+      ]
+    },
+    {
+      "amount": 40,
+      "book": "B2",
+      "control": 40,
+      "deducted": 0,
+      "kind": "control_total",
+      "new_pair": {
+        "X": "N-WEST",
+        "Y": "M-ALL"
+      },
+      "rect": [
+        "B",
+        "Q"
+      ]
+    }
+  ],
+  "parked": [
+    {
+      "amount": 0,
+      "book": "B1",
+      "control": 110,
+      "deducted": 110,
+      "deducted_controls": [
+        70
+      ],
+      "deducted_exact": 40,
+      "kind": "control_difference",
+      "new_pair": null,
+      "outside_missing": true,
+      "reason": "control_residual",
+      "rect": [
+        "A",
+        "P"
+      ]
+    },
+    {
+      "book": "B1",
+      "kind": "missing",
+      "new_pair": null,
+      "reason": "missing_not_absorbed",
+      "rect": [
+        "A2",
+        "P2"
+      ]
+    }
+  ],
+  "published_books": [
+    "B1",
+    "B2"
+  ],
+  "stats": {
+    "books_published": 2,
+    "books_seen": 4,
+    "books_withheld": 2,
+    "cells_walked": 8,
+    "leaf_pairs_materialized": 0,
+    "records_ingested": 4,
+    "records_parked": 2
+  },
+  "totals": {
+    "all_sources": 150,
+    "ingested": 150,
+    "parked": 0
+  },
+  "withheld_books": [
+    {
+      "book": "B3",
+      "reasons": [
+        "A|Q: control 20 != sum of applicable children 15; book withheld"
+      ]
+    },
+    {
+      "book": "B4",
+      "reasons": [
+        "B|P: exact control 9 although the cell and every descendant are not_applicable"
+      ]
+    }
+  ]
+}
