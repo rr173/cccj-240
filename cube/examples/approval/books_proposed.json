@@ -1,0 +1,30 @@
+{
+  "comment": "Proposed handover of the approval-chain fixture. Each member moves one cell along the open path, keeping one axis leaf fixed per move: H1 -> x2|y1, H2 -> x2|y2, H3 -> x1|y2, H4 -> x1|y3. The edges H1-H2, H2-H3, H3-H4 make one connected group of four. H5 changes its amount at an unrelated rectangle (isolated group). H3's new value is zero on purpose; every book stays publishable.",
+  "books": [
+    {
+      "id": "H1",
+      "rect": ["x2", "y1"],
+      "root": {"rect": ["x2", "y1"], "state": "exact", "value": 11}
+    },
+    {
+      "id": "H2",
+      "rect": ["x2", "y2"],
+      "root": {"rect": ["x2", "y2"], "state": "exact", "value": 21}
+    },
+    {
+      "id": "H3",
+      "rect": ["x1", "y2"],
+      "root": {"rect": ["x1", "y2"], "state": "exact", "value": 0}
+    },
+    {
+      "id": "H4",
+      "rect": ["x1", "y3"],
+      "root": {"rect": ["x1", "y3"], "state": "exact", "value": -6}
+    },
+    {
+      "id": "H5",
+      "rect": ["x2", "y3"],
+      "root": {"rect": ["x2", "y3"], "state": "exact", "value": 55}
+    }
+  ]
+}

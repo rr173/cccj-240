@@ -32,11 +32,13 @@
 
 ```
 src/cube/        引擎（model 几何 / loader 校验 / engine 构建与查询
-                 / mapping 新旧编码规则 / recode 离线转仓 / cli 命令行）
+                 / mapping 新旧编码规则 / recode 离线转仓 /
+                 approval 交接审批更正包 / cli 命令行）
 examples/data/   维度树、账套、顺序镜像夹具、批量目标、新旧编码映射
 examples/recode/ 转仓小样例批次与复跑说明
+examples/approval/ 交接审批（三次交接链、扣留拦截、两轮闭环）与复跑说明
 examples/output_ 已生成的可查结果
-tests/           51 个 unittest，无第三方依赖
+tests/           unittest，无第三方依赖
 ```
 
 ## 命令行
@@ -64,6 +66,15 @@ python3 -I src/cube/cli.py recode \
   --dims examples/data/dims.json --books examples/data/books.json \
   --mapping examples/data/mapping_sample.json \
   --out examples/recode/batch_sample.json --audit
+
+# 5. 交接审批：当前版 + 拟发布版 + 本次批准 ID -> 可过账更正包
+python3 -I src/cube/cli.py approve \
+  --dims examples/approval/dims_chain.json \
+  --mapping examples/approval/mapping_chain.json \
+  --current examples/approval/books_current.json \
+  --proposed examples/approval/books_proposed.json \
+  --approvals examples/approval/approvals_round1.json \
+  --out examples/approval/out/round1.json --audit
 ```
 
 ## 离线转仓（recode）
@@ -116,10 +127,60 @@ python3 -I src/cube/cli.py recode \
 `--audit` 附带 `reconcile`：对每个已发布账套核对
 `Σ入仓 + Σ暂挂金额（含控制差额）== 旧账来源合计`，不平则以退出码 3 结束。
 
+## 交接审批更正包（approve）
+
+同一个月先按旧交接过账、再出拟发布版：部分账套改了金额，部分把责任范围
+转给别的账套。`approve` 读取同一套维度树与转仓映射、**当前已过账的完整
+账套清单**、**拟发布的完整账套清单**（两份均允许空清单）和**本次批准的
+账套 ID 列表**，交付一份真正可过账的更正包；不连数仓、不改原交接文件。
+小样例与复跑步骤见 `examples/approval/REPRODUCE.md`。
+
+候选与分组（全部在稀疏矩形上判断，不展开两棵树的叶对）：
+
+- 只有新增、退场或内容有变化的 ID 是更正候选；仅换书写顺序不算变化，
+  责任范围、格的分解、状态、精确值或控制额变化才算。批准列表里不变的
+  ID 不产生分录；两版都没有的 ID 直接报错（退出码 2）。
+- 审批对象是整次责任交接：一个更正的**旧责任**与另一个更正的**新责任**
+  在某一处覆盖同一叶对（两维子树相交）即绑定，关系沿间接交接传递，连通
+  分量就是不可再拆的更正组。同一 ID 的撤旧与上新也不可拆。判断只走节点
+  子树相交，`leaf_pairs_materialized` 恒为 0。
+- 仅当组内全部 ID 已批准、且组内所有存在于拟发布版的账套都可发布时整组
+  生效；否则整组保持旧状，并在组上列明尚缺的批准与被扣留账套及原因。
+  拟发布版因控制额冲突等被现有构建扣留的账套按此规则处理，不把整个请求
+  报成输入损坏，也不拖住无交接关系的其它组。已退场无接手方的范围、无
+  移交方的新责任都随各自更正生效。
+
+更正包（`correction_package/v1`）内容：
+
+- `groups`：逐组给出成员、本次是否生效、尚缺批准与扣留账套原因。
+- `reversals` / `postings`：对生效组，以现有转仓命令的**可入仓记录**
+  为准，把成员旧版已过账记录逐条冲销——按相反符号保留原账套、原格、
+  来源类型和完整新码对；再把新版可入仓记录逐条登记。冲销与登记分列、
+  不按新码对轧差；原金额为负或为零同样处理。暂挂与缺报不是过账分录，
+  不会出现。
+- `effective_handover`：生效组整体换成新版（含删除与新增），其它组及
+  未变化账套保留旧版，即过账后实际生效的交接；格式即现有账套清单，可
+  直接作为下一次 `--current` 输入。
+- 同一业务输入仅打乱书写顺序，更正包内容完全相同；输出先写临时文件再
+  原子替换，结构或映射错误不留下半个包，也不覆盖此前的包。
+
 ## 已验证场景
 
 `tests/test_cube.py` 27 项覆盖原有构建/查询口径；`tests/test_recode.py` 24 项
-覆盖离线转仓：
+覆盖离线转仓；`tests/test_approval.py` 21 项覆盖交接审批更正包：
+
+- **三次交接链整组生效/冻结**：四个更正 ID 由三条旧责任↔新责任相交边连成
+  一组；只差链末一个 ID 的批准时整条链不产生任何分录，无关组仍可过账。
+- **扣留账套整组拦截**：拟发布账套因控制额冲突被现有构建扣留时，即使批准
+  齐全，同组旧账一条都不冲销，原因写入组报告；其它组不受影响。
+- **两轮新码对累计闭环**：从首个更正包的 `effective_handover` 继续审批，
+  旧账入仓额加两轮冲销/登记，按新码对累计等于最终生效交接重新转仓的金额。
+- **冲销口径**：冲销只翻符号、保留原账套/原格/来源类型/完整新码对，负数
+  变正数、零照常出记录；冲销与登记分列不轧差；暂挂与缺报不产生分录。
+- **新增、退场、不变、纯换序与空清单**：退场只冲销不登记、新增只登记不
+  冲销；换书写顺序不是变化；两版都没有的批准 ID 报错；当前版必须可发布。
+- **确定性与原子写**：打乱账套/批准书写顺序，更正包内容相同；结构或映射
+  错误不留下半包、不覆盖旧包。
 
 - **映射校验**：未知节点、同轴重复规则、空新码、未映射叶均拒收且不写批次；
   祖先/后代规则覆盖与多旧叶共享新码。

@@ -1,0 +1,157 @@
+{
+  "approved_ids": [
+    "H1",
+    "H2",
+    "H3",
+    "H5"
+  ],
+  "effective_handover": {
+    "books": [
+      {
+        "id": "H1",
+        "rect": [
+          "x1",
+          "y1"
+        ],
+        "root": {
+          "rect": [
+            "x1",
+            "y1"
+          ],
+          "state": "exact",
+          "value": 10
+        }
+      },
+      {
+        "id": "H4",
+        "rect": [
+          "x1",
+          "y2"
+        ],
+        "root": {
+          "rect": [
+            "x1",
+            "y2"
+          ],
+          "state": "exact",
+          "value": -7
+        }
+      },
+      {
+        "id": "H2",
+        "rect": [
+          "x2",
+          "y1"
+        ],
+        "root": {
+          "rect": [
+            "x2",
+            "y1"
+          ],
+          "state": "exact",
+          "value": 20
+        }
+      },
+      {
+        "id": "H3",
+        "rect": [
+          "x2",
+          "y2"
+        ],
+        "root": {
+          "rect": [
+            "x2",
+            "y2"
+          ],
+          "state": "exact",
+          "value": 30
+        }
+      },
+      {
+        "id": "H5",
+        "rect": [
+          "x2",
+          "y3"
+        ],
+        "root": {
+          "rect": [
+            "x2",
+            "y3"
+          ],
+          "state": "exact",
+          "value": 55
+        }
+      }
+    ],
+    "format": "handover_books/v1"
+  },
+  "format": "correction_package/v1",
+  "groups": [
+    {
+      "effective": false,
+      "members": [
+        "H1",
+        "H2",
+        "H3",
+        "H4"
+      ],
+      "missing_approvals": [
+        "H4"
+      ],
+      "withheld_books": []
+    },
+    {
+      "effective": true,
+      "members": [
+        "H5"
+      ],
+      "missing_approvals": [],
+      "withheld_books": []
+    }
+  ],
+  "postings": [
+    {
+      "amount": 55,
+      "book": "H5",
+      "entry": "posting",
+      "kind": "exact_terminal",
+      "new_pair": {
+        "X": "NX",
+        "Y": "NY3"
+      },
+      "rect": [
+        "x2",
+        "y3"
+      ]
+    }
+  ],
+  "reversals": [
+    {
+      "amount": -50,
+      "book": "H5",
+      "entry": "reversal",
+      "kind": "exact_terminal",
+      "new_pair": {
+        "X": "NX",
+        "Y": "NY3"
+      },
+      "rect": [
+        "x2",
+        "y3"
+      ]
+    }
+  ],
+  "stats": {
+    "candidate_books": 5,
+    "groups_effective": 1,
+    "groups_held": 1,
+    "groups_total": 2,
+    "leaf_pairs_materialized": 0,
+    "posting_records": 1,
+    "reversal_records": 1
+  },
+  "totals": {
+    "postings": 55,
+    "reversals": -50
+  }
+}

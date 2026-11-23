@@ -1,0 +1,4 @@
+{
+  "comment": "Second approval round: the full chain H1..H4 plus the already-posted H5. Unchanged ids in the approval list are allowed and produce no entries.",
+  "approved": ["H1", "H2", "H3", "H4", "H5"]
+}

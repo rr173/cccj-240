@@ -180,7 +180,7 @@ def _validate_split(
             )
 
 
-def load_handover(dims_raw: dict, books_raw: dict) -> Handover:
+def load_handover(dims_raw: dict, books_raw: dict, *, allow_empty: bool = False) -> Handover:
     try:
         dims = dims_raw["dimensions"]
     except (TypeError, KeyError):
@@ -192,7 +192,7 @@ def load_handover(dims_raw: dict, books_raw: dict) -> Handover:
 
     if not isinstance(books_raw, dict) or not isinstance(
         books_raw.get("books"), list
-    ) or not books_raw["books"]:
+    ) or (not books_raw["books"] and not allow_empty):
         raise ModelError("books file needs a non-empty 'books' list")
 
     books: List[Book] = []

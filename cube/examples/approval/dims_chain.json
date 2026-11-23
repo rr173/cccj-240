@@ -1,0 +1,22 @@
+{
+  "comment": "Approval-chain fixture: a 2x3 leaf grid. Four chain members occupy an open path of cells and each handover keeps one axis leaf fixed, producing exactly three consecutive handover links (H1-H2, H2-H3, H3-H4) in one connected group. H5 on the remaining cell x2|y3 is an isolated group. No leaf Cartesian product is ever materialised.",
+  "dimensions": {
+    "X": {
+      "root": "X",
+      "nodes": {
+        "X": ["x1", "x2"],
+        "x1": [],
+        "x2": []
+      }
+    },
+    "Y": {
+      "root": "Y",
+      "nodes": {
+        "Y": ["y1", "y2", "y3"],
+        "y1": [],
+        "y2": [],
+        "y3": []
+      }
+    }
+  }
+}

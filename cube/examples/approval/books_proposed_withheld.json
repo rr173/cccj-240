@@ -1,0 +1,30 @@
+{
+  "comment": "Withheld variant of the proposed handover. H2 keeps its proposed rectangle x2|y2 but its exact terminal now carries a control total contradicting the value (control 99 != value 21); the existing build withholds H2 without rejecting the input. H2 sits inside the three-link chain group, so even with every member approved the whole group stays on the old books and no old record is reversed; the isolated H5 group still posts.",
+  "books": [
+    {
+      "id": "H1",
+      "rect": ["x2", "y1"],
+      "root": {"rect": ["x2", "y1"], "state": "exact", "value": 11}
+    },
+    {
+      "id": "H2",
+      "rect": ["x2", "y2"],
+      "root": {"rect": ["x2", "y2"], "state": "exact", "value": 21, "control": 99}
+    },
+    {
+      "id": "H3",
+      "rect": ["x1", "y2"],
+      "root": {"rect": ["x1", "y2"], "state": "exact", "value": 0}
+    },
+    {
+      "id": "H4",
+      "rect": ["x1", "y3"],
+      "root": {"rect": ["x1", "y3"], "state": "exact", "value": -6}
+    },
+    {
+      "id": "H5",
+      "rect": ["x2", "y3"],
+      "root": {"rect": ["x2", "y3"], "state": "exact", "value": 55}
+    }
+  ]
+}

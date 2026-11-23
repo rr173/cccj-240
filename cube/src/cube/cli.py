@@ -30,6 +30,7 @@ import tempfile
 from typing import List
 
 try:  # package execution: python -m cube.cli
+    from .approval import build_correction_package
     from .engine import BookResult, Cube, Fragment, build_cube, query_cube
     from .loader import load_handover
     from .mapping import load_mapping
@@ -40,6 +41,7 @@ except ImportError:  # direct script execution: python /path/to/cli.py
     import sys
 
     sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    from cube.approval import build_correction_package
     from cube.engine import BookResult, Cube, Fragment, build_cube, query_cube
     from cube.loader import load_handover
     from cube.mapping import load_mapping
@@ -53,6 +55,11 @@ def _load_inputs(dims_path: str, books_path: str):
     with open(books_path, "r", encoding="utf-8") as fh:
         books_raw = json.load(fh)
     return load_handover(dims_raw, books_raw)
+
+
+def _read_json(path: str) -> dict:
+    with open(path, "r", encoding="utf-8") as fh:
+        return json.load(fh)
 
 
 def _load_mapping_file(path: str, handover):
@@ -191,7 +198,75 @@ def main(argv: List[str] | None = None) -> int:
     p_recode.add_argument("--audit", action="store_true",
                           help="also print a short audit report to stdout")
 
+    p_approve = sub.add_parser(
+        "approve",
+        help="approve a responsibility handover and build its correction package",
+    )
+    p_approve.add_argument("--dims", required=True,
+                           help="dimension trees JSON (shared by both versions)")
+    p_approve.add_argument("--mapping", required=True,
+                           help="old-node -> new-code rules JSON (recode rules)")
+    p_approve.add_argument("--current", required=True,
+                           help="currently posted complete book list JSON")
+    p_approve.add_argument("--proposed", required=True,
+                           help="proposed complete book list JSON")
+    p_approve.add_argument("--approvals", required=True,
+                           help='JSON file: ["B1", ...] or {"approved": [...]}')
+    p_approve.add_argument("--out", required=True,
+                           help="write the correction package JSON here")
+    p_approve.add_argument("--audit", action="store_true",
+                           help="also print a short package audit to stdout")
+
     args = parser.parse_args(argv)
+    if args.cmd == "approve":
+        try:
+            with open(args.dims, "r", encoding="utf-8") as fh:
+                dims_raw = json.load(fh)
+            with open(args.current, "r", encoding="utf-8") as fh:
+                current_raw = json.load(fh)
+            with open(args.proposed, "r", encoding="utf-8") as fh:
+                proposed_raw = json.load(fh)
+            with open(args.approvals, "r", encoding="utf-8") as fh:
+                approvals_raw = json.load(fh)
+            if isinstance(approvals_raw, dict):
+                approvals = approvals_raw.get("approved")
+                if not isinstance(approvals, list):
+                    raise ModelError(
+                        "approvals file must be a list or "
+                        "an object with an 'approved' list"
+                    )
+            elif isinstance(approvals_raw, list):
+                approvals = approvals_raw
+            else:
+                raise ModelError(
+                    "approvals file must be a list or "
+                    "an object with an 'approved' list"
+                )
+            handover = load_handover(dims_raw, current_raw, allow_empty=True)
+            maps = load_mapping(
+                _read_json(args.mapping), handover.tree_x, handover.tree_y
+            )
+            package = build_correction_package(
+                dims_raw, current_raw, proposed_raw, approvals, maps
+            )
+        except (ModelError, FileNotFoundError, json.JSONDecodeError) as exc:
+            print(f"error: {exc}", file=sys.stderr)
+            return 2
+        text = json.dumps(package, ensure_ascii=False, indent=2, sort_keys=True)
+        try:
+            _atomic_write(args.out, text + "\n")
+        except OSError as exc:
+            print(f"error: cannot write {args.out}: {exc}", file=sys.stderr)
+            return 2
+        if args.audit:
+            print(json.dumps({
+                "format": package["format"],
+                "groups": package["groups"],
+                "totals": package["totals"],
+                "stats": package["stats"],
+            }, ensure_ascii=False, indent=2))
+        return 0
+
     try:
         handover = _load_inputs(args.dims, args.books)
         cube = build_cube(handover)

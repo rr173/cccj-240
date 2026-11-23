@@ -1,0 +1,4 @@
+{
+  "comment": "First approval round of the chain fixture: H1..H3 and the isolated H5 are approved, but the last chain id H4 is not. The four-member chain group must stay completely old; only the H5 group posts.",
+  "approved": ["H1", "H2", "H3", "H5"]
+}

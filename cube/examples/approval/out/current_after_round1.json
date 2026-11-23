@@ -1,0 +1,80 @@
+{
+  "books": [
+    {
+      "id": "H1",
+      "rect": [
+        "x1",
+        "y1"
+      ],
+      "root": {
+        "rect": [
+          "x1",
+          "y1"
+        ],
+        "state": "exact",
+        "value": 10
+      }
+    },
+    {
+      "id": "H4",
+      "rect": [
+        "x1",
+        "y2"
+      ],
+      "root": {
+        "rect": [
+          "x1",
+          "y2"
+        ],
+        "state": "exact",
+        "value": -7
+      }
+    },
+    {
+      "id": "H2",
+      "rect": [
+        "x2",
+        "y1"
+      ],
+      "root": {
+        "rect": [
+          "x2",
+          "y1"
+        ],
+        "state": "exact",
+        "value": 20
+      }
+    },
+    {
+      "id": "H3",
+      "rect": [
+        "x2",
+        "y2"
+      ],
+      "root": {
+        "rect": [
+          "x2",
+          "y2"
+        ],
+        "state": "exact",
+        "value": 30
+      }
+    },
+    {
+      "id": "H5",
+      "rect": [
+        "x2",
+        "y3"
+      ],
+      "root": {
+        "rect": [
+          "x2",
+          "y3"
+        ],
+        "state": "exact",
+        "value": 55
+      }
+    }
+  ],
+  "format": "handover_books/v1"
+}

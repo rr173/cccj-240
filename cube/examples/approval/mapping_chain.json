@@ -1,0 +1,11 @@
+{
+  "comment": "Recode rules for the approval-chain fixture. Every old leaf resolves; the whole X tree maps to one code and y1/y2 share one code, so several chain records land on the same new pair (records still stay separate, never netted); y3 gets its own code.",
+  "X": [
+    {"old": "X", "new": "NX"}
+  ],
+  "Y": [
+    {"old": "y1", "new": "NY12"},
+    {"old": "y2", "new": "NY12"},
+    {"old": "y3", "new": "NY3"}
+  ]
+}

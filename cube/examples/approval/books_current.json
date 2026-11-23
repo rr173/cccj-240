@@ -1,0 +1,30 @@
+{
+  "comment": "Current (already posted) handover of the approval-chain fixture. Five books on pairwise disjoint leaf-pair rectangles; every cell is an exact terminal so the whole version is publishable. H1..H4 form a three-link handover chain; H5 is an isolated group. H4 carries a negative amount on purpose.",
+  "books": [
+    {
+      "id": "H1",
+      "rect": ["x1", "y1"],
+      "root": {"rect": ["x1", "y1"], "state": "exact", "value": 10}
+    },
+    {
+      "id": "H2",
+      "rect": ["x2", "y1"],
+      "root": {"rect": ["x2", "y1"], "state": "exact", "value": 20}
+    },
+    {
+      "id": "H3",
+      "rect": ["x2", "y2"],
+      "root": {"rect": ["x2", "y2"], "state": "exact", "value": 30}
+    },
+    {
+      "id": "H4",
+      "rect": ["x1", "y2"],
+      "root": {"rect": ["x1", "y2"], "state": "exact", "value": -7}
+    },
+    {
+      "id": "H5",
+      "rect": ["x2", "y3"],
+      "root": {"rect": ["x2", "y3"], "state": "exact", "value": 50}
+    }
+  ]
+}
