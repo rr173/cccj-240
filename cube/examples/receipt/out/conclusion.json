@@ -1,0 +1,28 @@
+{
+  "format": "receipt_verification/v1",
+  "cutoff": 4,
+  "plan_rounds": ["2024-05", "2024-06"],
+  "groups": [
+    {"expected_entries": 4, "members": ["BK-A", "BK-B"], "reasons": [{"commits": [1, 2], "group": {"members": ["BK-A", "BK-B"], "round": "2024-05"}, "reason": "group_entries_in_multiple_commits"}], "round": "2024-05", "status": "receipt_not_signable"},
+    {"commit": 4, "expected_entries": 1, "members": ["BK-D"], "round": "2024-05", "status": "signable"},
+    {"expected_entries": 3, "members": ["BK-B", "BK-C"], "reasons": [{"group": {"members": ["BK-B", "BK-C"], "round": "2024-06"}, "prerequisite": {"members": ["BK-A", "BK-B"], "round": "2024-05"}, "prerequisite_status": "receipt_not_signable", "reason": "prerequisite_not_signable"}], "round": "2024-06", "status": "receipt_not_signable"},
+    {"expected_entries": 1, "members": ["BK-F"], "reasons": [{"co_group": {"members": ["BK-B", "BK-C"], "round": "2024-06"}, "commit": 3, "group": {"members": ["BK-F"], "round": "2024-06"}, "prerequisite": {"members": ["BK-A", "BK-B"], "round": "2024-05"}, "reason": "co_transaction_group_prerequisite_unmet"}], "round": "2024-06", "status": "receipt_not_signable"}
+  ],
+  "failed_transactions": [
+    {"commit": 1, "reasons": [{"commits": [1, 2], "group": {"members": ["BK-A", "BK-B"], "round": "2024-05"}, "reason": "group_entries_in_multiple_commits"}]},
+    {"commit": 2, "reasons": [{"commits": [1, 2], "group": {"members": ["BK-A", "BK-B"], "round": "2024-05"}, "reason": "group_entries_in_multiple_commits"}]},
+    {"commit": 3, "reasons": [{"group": {"members": ["BK-B", "BK-C"], "round": "2024-06"}, "prerequisite": {"members": ["BK-A", "BK-B"], "round": "2024-05"}, "prerequisite_status": "receipt_not_signable", "reason": "prerequisite_not_signable"}, {"co_group": {"members": ["BK-B", "BK-C"], "round": "2024-06"}, "commit": 3, "group": {"members": ["BK-F"], "round": "2024-06"}, "prerequisite": {"members": ["BK-A", "BK-B"], "round": "2024-05"}, "reason": "co_transaction_group_prerequisite_unmet"}]}
+  ],
+  "stats": {
+  "commits_in_prefix": 4,
+  "cutoff": 4,
+  "duplicate_export_lines": 1,
+  "groups_no_receipt": 0,
+  "groups_receipt_not_signable": 3,
+  "groups_signable": 1,
+  "groups_with_expected_entries": 4,
+  "receipt_lines": 9,
+  "transactions_failed": 3,
+  "transactions_signable": 1
+}
+}

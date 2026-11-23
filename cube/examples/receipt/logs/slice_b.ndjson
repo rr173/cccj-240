@@ -1,0 +1,4 @@
+{"commit": 4, "line": 1, "line_count": 1, "round": "2024-05", "entry": "posting", "book": "BK-D", "rect": ["x1", "y3"], "kind": "exact_terminal", "new_pair": {"X": "NX", "Y": "NY3"}, "amount": 7}
+{"commit": 2, "line": 1, "line_count": 2, "round": "2024-05", "entry": "reversal", "book": "BK-B", "rect": ["x2", "y1"], "kind": "exact_terminal", "new_pair": {"X": "NX", "Y": "NY1"}, "amount": 30}
+{"commit": 2, "line": 2, "line_count": 2, "round": "2024-05", "entry": "posting", "book": "BK-B", "rect": ["x2", "y1"], "kind": "exact_terminal", "new_pair": {"X": "NX", "Y": "NY1"}, "amount": -25}
+{"commit": 1, "line": 1, "line_count": 2, "round": "2024-05", "entry": "reversal", "book": "BK-A", "rect": ["x1", "y1"], "kind": "exact_terminal", "new_pair": {"X": "NX", "Y": "NY1"}, "amount": -100}

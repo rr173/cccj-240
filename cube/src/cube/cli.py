@@ -35,6 +35,12 @@ try:  # package execution: python -m cube.cli
     from .loader import load_handover
     from .mapping import load_mapping
     from .model import ModelError
+    from .receipt import (
+        ReceiptError,
+        Verifier,
+        load_plan_file,
+        write_conclusion,
+    )
     from .recode import convert_handover, reconcile
 except ImportError:  # direct script execution: python /path/to/cli.py
     import os
@@ -46,6 +52,12 @@ except ImportError:  # direct script execution: python /path/to/cli.py
     from cube.loader import load_handover
     from cube.mapping import load_mapping
     from cube.model import ModelError
+    from cube.receipt import (
+        ReceiptError,
+        Verifier,
+        load_plan_file,
+        write_conclusion,
+    )
     from cube.recode import convert_handover, reconcile
 
 
@@ -79,6 +91,28 @@ def _atomic_write(path: str, text: str) -> None:
     try:
         with os.fdopen(fd, "w", encoding="utf-8") as fh:
             fh.write(text)
+            fh.flush()
+            os.fsync(fh.fileno())
+        os.replace(tmp, path)
+    except BaseException:
+        try:
+            os.unlink(tmp)
+        except FileNotFoundError:
+            pass
+        raise
+
+
+def _atomic_write_conclusion(path: str, verifier) -> None:
+    """Stream the verification conclusion beside the target, then replace.
+
+    An unverifiable input raises before this is called, so an earlier
+    conclusion file is never replaced by a failed run.
+    """
+    directory = os.path.dirname(os.path.abspath(path)) or "."
+    fd, tmp = tempfile.mkstemp(prefix=".verify-", suffix=".tmp", dir=directory)
+    try:
+        with os.fdopen(fd, "w", encoding="utf-8") as fh:
+            write_conclusion(verifier, fh)
             fh.flush()
             os.fsync(fh.fileno())
         os.replace(tmp, path)
@@ -217,7 +251,42 @@ def main(argv: List[str] | None = None) -> int:
     p_approve.add_argument("--audit", action="store_true",
                            help="also print a short package audit to stdout")
 
+    p_verify = sub.add_parser(
+        "verify",
+        help="verify posting-log receipts against approved correction packages",
+    )
+    p_verify.add_argument("--plan", required=True,
+                          help="verification plan JSON: ordered rounds, each "
+                               "naming a correction_package/v1 file")
+    p_verify.add_argument("--logs", required=True, nargs="+",
+                          help="NDJSON posting-log export slices "
+                               "(unordered, may overlap)")
+    p_verify.add_argument("--cutoff", required=True, type=int,
+                          help="non-negative commit cutoff; later commits "
+                               "are not evidence")
+    p_verify.add_argument("--out",
+                          help="write the conclusion JSON here (default stdout)")
+
     args = parser.parse_args(argv)
+    if args.cmd == "verify":
+        if args.cutoff < 0:
+            print("error: --cutoff must be a non-negative integer",
+                  file=sys.stderr)
+            return 2
+        try:
+            plan = load_plan_file(args.plan)
+            with Verifier(plan, args.logs, args.cutoff) as verifier:
+                verifier.run()
+                if args.out:
+                    _atomic_write_conclusion(args.out, verifier)
+                else:
+                    write_conclusion(verifier, sys.stdout)
+        except (ReceiptError, ModelError, FileNotFoundError,
+                json.JSONDecodeError, OSError) as exc:
+            print(f"error: {exc}", file=sys.stderr)
+            return 2
+        return 0
+
     if args.cmd == "approve":
         try:
             with open(args.dims, "r", encoding="utf-8") as fh:

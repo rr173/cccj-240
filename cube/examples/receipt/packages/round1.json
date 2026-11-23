@@ -1,0 +1,63 @@
+{
+  "format": "correction_package/v1",
+  "approved_ids": ["BK-A", "BK-B", "BK-D"],
+  "groups": [
+    {
+      "members": ["BK-A", "BK-B"],
+      "effective": true,
+      "missing_approvals": [],
+      "withheld_books": []
+    },
+    {
+      "members": ["BK-D"],
+      "effective": true,
+      "missing_approvals": [],
+      "withheld_books": []
+    }
+  ],
+  "reversals": [
+    {
+      "entry": "reversal",
+      "book": "BK-A",
+      "rect": ["x1", "y1"],
+      "kind": "exact_terminal",
+      "new_pair": {"X": "NX", "Y": "NY1"},
+      "amount": -100
+    },
+    {
+      "entry": "reversal",
+      "book": "BK-B",
+      "rect": ["x2", "y1"],
+      "kind": "exact_terminal",
+      "new_pair": {"X": "NX", "Y": "NY1"},
+      "amount": 30
+    }
+  ],
+  "postings": [
+    {
+      "entry": "posting",
+      "book": "BK-A",
+      "rect": ["x1", "y1"],
+      "kind": "exact_terminal",
+      "new_pair": {"X": "NX", "Y": "NY1"},
+      "amount": 120
+    },
+    {
+      "entry": "posting",
+      "book": "BK-B",
+      "rect": ["x2", "y1"],
+      "kind": "exact_terminal",
+      "new_pair": {"X": "NX", "Y": "NY1"},
+      "amount": -25
+    },
+    {
+      "entry": "posting",
+      "book": "BK-D",
+      "rect": ["x1", "y3"],
+      "kind": "exact_terminal",
+      "new_pair": {"X": "NX", "Y": "NY3"},
+      "amount": 7
+    }
+  ],
+  "totals": {"reversals": -70, "postings": 102}
+}

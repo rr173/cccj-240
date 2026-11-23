@@ -1,0 +1,7 @@
+{
+  "format": "verification_plan/v1",
+  "rounds": [
+    {"round": "2024-05", "package": "packages/round1.json"},
+    {"round": "2024-06", "package": "packages/round2.json"}
+  ]
+}
